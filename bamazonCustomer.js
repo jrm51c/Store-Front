@@ -1,5 +1,7 @@
 var mysql = require("mysql");
+var inquirerResponse = require('inquirer');
 
+// Connect to db
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -20,10 +22,35 @@ connection.connect(function(err) {
   displayProducts();
 });
 
+// Query db and display products 
 function displayProducts() {
   connection.query("SELECT item_id, product_name, price FROM products", function(err, res) {
     if (err) throw err;
     console.log(res);
     connection.end();
+    queryCustomer();
   });
 }
+
+// Prompt user for information
+function queryCustomer()    {
+    inquirerResponse.prompt([
+
+        {
+          type: "input",
+          name: "productID",
+          message: "Enter the product ID of the item you would like to purchase"
+        },
+        {
+          type: "input",
+          name: "quantity",
+          message: "How many units would you like to purchase?"
+        }
+      ]).then(function (inquirerResponse) {
+        var productID = inquirerResponse.productID;
+        var quantity = inquirerResponse.quantity;
+      });
+      console.log(productID);
+      console.log(quantity);
+
+};
