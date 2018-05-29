@@ -30,7 +30,7 @@ function displayProducts() {
   });
 }
 
-// Prompt user for information
+// Prompt customer for information
 function promptCustomer() {
   inquirerResponse.prompt([
     {
