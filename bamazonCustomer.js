@@ -2,6 +2,7 @@ var mysql = require("mysql");
 var inquirerResponse = require('inquirer');
 var itemID;
 var quantityOrdered;
+var numberInStock;
 
 // Connect to db
 var connection = mysql.createConnection({
@@ -26,9 +27,10 @@ function displayProducts() {
   });
   connection.query("SELECT item_id, product_name, price FROM products", function (err, res) {
     if (err) throw err;
+    console.log(res);
     promptCustomer();
   });
-}
+};
 
 // Prompt customer for information
 function promptCustomer() {
@@ -53,29 +55,30 @@ function promptCustomer() {
 
 // Query db to determine numer of units in stock 
 function determineStock() {
-  var numberInStock;
+  //var numberInStock;
 
   connection.query("SELECT stock_quantity FROM products WHERE item_id =" + itemID, function (err, res) {
     if (err) throw err;
     numberInStock = res[0].stock_quantity;
-    processOrder(numberInStock);
+    //processOrder(numberInStock);
+    processOrder();
   });
 };
 
-function processOrder(numberInStock) {
-  this.itemID = itemID;
-  this.quantityOrdered = quantityOrdered;
-  this.numberInStock = numberInStock;
+function processOrder() {
+  //this.itemID = itemID;
+  //this.quantityOrdered = quantityOrdered;
+  //this.numberInStock = numberInStock;
 
-  if (this.quantityOrdered > this.numberInStock) {
+  if (quantityOrdered > numberInStock) {
     console.log("Sorry, but we are unable to process your order at this time due to insufficient inventory.");
     connection.end();
   } else {
-    this.numberInStock -= this.quantityOrdered;
-    console.log(this.itemID);
-    console.log(this.quantityOrdered);
-    console.log(this.numberInStock);
-    connection.query("UPDATE products SET stock_quantity =" + this.numberInStock + "WHERE item_id =" + this.itemID, function (err, res) {
+    numberInStock -= quantityOrdered;
+    console.log(itemID);
+    console.log(quantityOrdered);
+    console.log(numberInStock);
+    connection.query("UPDATE products SET stock_quantity =" + numberInStock + "WHERE item_id =" + itemID, function (err, res) {
       if (err) throw err;
       connection.end();
     });
