@@ -1,30 +1,28 @@
 var mysql = require("mysql");
-var inquirerResponse = require('inquirer');
+var inquirerResponse = require("inquirer");
 
 // Prompt manager for information
 function promptManager() {
-    inquirerResponse.prompt([
-      {
-        type: "list",
-        name: "action",
-        message: "What would you lie to do?",
-        choices: ["view products for sale", "view low inventory", "add to inventory", "add new product"]
-      }
-    ]).then(function (inquirerResponse) {
-      var action = inquirerResponse.action;
+  inquirerResponse.prompt([{
+    type: "list",
+    name: "action",
+    message: "What would you like to do?",
+    choices: ["view products for sale", "view low inventory", "add inventory", "add new product"]
+  }]).then(function (inquirerResponse) {
+    var action = inquirerResponse.action;
 
-      if (action === "view products for sale") {
-        viewProducts();
-      } else if (action === "view low inventory") {
-        viewLowInventory();
-      } else if (action === "add to inventory")  {
-        addInventory();
-      } else if (action === "add new product")  {
-        addNewProduct();
-      } else    {
-        console.log("invalid command");
-      }
-    });
+    if (action === "view products for sale") {
+      viewProducts();
+    } else if (action === "view low inventory") {
+      viewLowInventory();
+    } else if (action === "add inventory") {
+      getCurrentInventory();
+    } else if (action === "add new product") {
+      addNewProduct();
+    } else {
+      console.log("invalid command");
+    }
+  });
 };
 
 
@@ -44,38 +42,105 @@ var connection = mysql.createConnection({
 });
 
 
-  function viewProducts()   {
+function viewProducts() {
+  connection.connect(function (err) {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+  });
+  connection.query("SELECT * FROM products", function (err, res) {
+    if (err) throw err;
+    connection.end();
+    console.log(res);
+  });
+
+};
+
+function viewLowInventory() {
+  connection.connect(function (err) {
+    if (err) throw err;
+    console.log("connected as id " + connection.threadId);
+  });
+  connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
+    if (err) throw err;
+    connection.end();
+    console.log(res);
+  });
+
+};
+
+
+function getCurrentInventory() {
+  inquirerResponse.prompt([{
+      type: "input",
+      name: "itemID",
+      message: "Enter item ID to update inventory:"
+    },
+    {
+      type: "input",
+      name: "units",
+      message: "Enter number of units:"
+    }
+  ]).then(function (inquirerResponse) {
+    var itemID = inquirerResponse.itemID;
+    var units = parseInt(inquirerResponse.units);
+    var currentUnits;
+
+    //determine existing inventory
     connection.connect(function (err) {
       if (err) throw err;
       console.log("connected as id " + connection.threadId);
     });
-    connection.query("SELECT * FROM products", function (err, res) {
+    connection.query("Select stock_quantity FROM products WHERE item_id =" + itemID, function (err, res) {
+      if (err) throw err;
+      currentUnits = res[0].stock_quantity;
+      currentUnits += units;
+      addInventory(itemID, currentUnits);
+    });
+  });
+
+};
+
+function addInventory(itemID, currentUnits) {
+  console.log(currentUnits);
+  console.log(itemID);
+  connection.query("UPDATE products SET stock_quantity =" + currentUnits + "WHERE item_id =" + itemID, function (err, res) {
+    if (err) throw err;
+    connection.end();
+  });
+};
+
+function addNewProduct() {
+  inquirerResponse.prompt([{
+      type: "input",
+      name: "product",
+      message: "Enter product name:"
+    },
+    {
+      type: "input",
+      name: "department",
+      message: "Enter department:"
+    },
+    {
+      type: "input",
+      name: "price",
+      message: "Enter unit price:"
+    },
+    {
+      type: "input",
+      name: "quantity",
+      message: "Enter quantity:"
+    }
+  ]).then(function (inquirerResponse) {
+    var product = inquirerResponse.product;
+    var department = inquirerResponse.department;
+    var price = inquirerResponse.price;
+    var quantity = inquirerResponse.quantity;
+
+    connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (" + product + "," + department_name + "," + price + "," + stock_quantity + ")", function (err, res) {
       if (err) throw err;
       connection.end();
-      console.log(res);
     });
+  });
+};
 
-  };
-
-  function viewLowInventory()   {
-    connection.connect(function (err) {
-      if (err) throw err;
-      console.log("connected as id " + connection.threadId);
-    });
-    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
-      if (err) throw err;
-      connection.end();
-      console.log(res);
-    });
-
-  };
-
-  function addInventory()   {
-
-  };
-
-  function addNewProduct()  {
-
-  };
-
-  promptManager();
+promptManager();

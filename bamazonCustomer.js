@@ -1,5 +1,5 @@
 var mysql = require("mysql");
-var inquirerResponse = require('inquirer');
+var inquirerResponse = require("inquirer");
 var itemID;
 var quantityOrdered;
 var numberInStock;
@@ -34,8 +34,7 @@ function displayProducts() {
 
 // Prompt customer for information
 function promptCustomer() {
-  inquirerResponse.prompt([
-    {
+  inquirerResponse.prompt([{
       type: "input",
       name: "itemID",
       message: "Enter the ID of the item you would like to purchase:"
@@ -55,21 +54,14 @@ function promptCustomer() {
 
 // Query db to determine numer of units in stock 
 function determineStock() {
-  //var numberInStock;
-
   connection.query("SELECT stock_quantity FROM products WHERE item_id =" + itemID, function (err, res) {
     if (err) throw err;
     numberInStock = res[0].stock_quantity;
-    //processOrder(numberInStock);
     processOrder();
   });
 };
 
 function processOrder() {
-  //this.itemID = itemID;
-  //this.quantityOrdered = quantityOrdered;
-  //this.numberInStock = numberInStock;
-
   if (quantityOrdered > numberInStock) {
     console.log("Sorry, but we are unable to process your order at this time due to insufficient inventory.");
     connection.end();
