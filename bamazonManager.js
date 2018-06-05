@@ -47,7 +47,8 @@ function viewProducts() {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
   });
-  connection.query("SELECT * FROM products", function (err, res) {
+  const queryString = "SELECT * FROM products";
+  connection.query(queryString, function (err, res) {
     if (err) throw err;
     connection.end();
     console.log(res);
@@ -60,7 +61,8 @@ function viewLowInventory() {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
   });
-  connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, res) {
+  const queryString = "SELECT * FROM products WHERE stock_quantity < 5";
+  connection.query(queryString, function (err, res) {
     if (err) throw err;
     connection.end();
     console.log(res);
@@ -90,7 +92,8 @@ function getCurrentInventory() {
       if (err) throw err;
       console.log("connected as id " + connection.threadId);
     });
-    connection.query("Select stock_quantity FROM products WHERE item_id =" + itemID, function (err, res) {
+    const queryString = `SELECT stock_quantity FROM products WHERE item_id=${itemID}`;
+    connection.query(queryString, function (err, res) {
       if (err) throw err;
       currentUnits = res[0].stock_quantity;
       currentUnits += units;
@@ -101,9 +104,8 @@ function getCurrentInventory() {
 };
 
 function addInventory(itemID, currentUnits) {
-  console.log(currentUnits);
-  console.log(itemID);
-  connection.query("UPDATE products SET stock_quantity =" + currentUnits + "WHERE item_id =" + itemID, function (err, res) {
+  const queryString = `UPDATE products SET stock_quantity=${currentUnits} WHERE item_id=${itemID}`;
+  connection.query(queryString, function (err, res) {
     if (err) throw err;
     connection.end();
   });
@@ -135,8 +137,8 @@ function addNewProduct() {
     var department = inquirerResponse.department;
     var price = inquirerResponse.price;
     var quantity = inquirerResponse.quantity;
-
-    connection.query("INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES (" + product + "," + department_name + "," + price + "," + stock_quantity + ")", function (err, res) {
+    const queryString = `INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ("${product}", "${department}", ${price}, ${quantity})`;
+    connection.query(queryString, function (err, res) {
       if (err) throw err;
       connection.end();
     });

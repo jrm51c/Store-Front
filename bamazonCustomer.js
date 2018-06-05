@@ -25,7 +25,7 @@ function displayProducts() {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
   });
-  const queryString = `SELECT item_id, product_name, price FROM products`;
+  const queryString = "SELECT item_id, product_name, price FROM products";
   connection.query(queryString, function (err, res) {
     if (err) throw err;
     console.log(res);
@@ -70,6 +70,7 @@ function processOrder() {
   } else {
     numberInStock -= quantityOrdered;
     const queryString = `UPDATE products SET stock_quantity=${numberInStock} WHERE item_id=${itemID}`;
+    console.log(queryString);
     connection.query(queryString, function (err, res) {
       if (err) throw err;
       connection.end();
