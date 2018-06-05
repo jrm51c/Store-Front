@@ -25,7 +25,8 @@ function displayProducts() {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
   });
-  connection.query("SELECT item_id, product_name, price FROM products", function (err, res) {
+  const queryString = `SELECT item_id, product_name, price FROM products`;
+  connection.query(queryString, function (err, res) {
     if (err) throw err;
     console.log(res);
     promptCustomer();
@@ -54,7 +55,8 @@ function promptCustomer() {
 
 // Query db to determine numer of units in stock 
 function determineStock() {
-  connection.query("SELECT stock_quantity FROM products WHERE item_id =" + itemID, function (err, res) {
+  const queryString = `SELECT stock_quantity FROM products WHERE item_id=${itemID}`;
+  connection.query(queryString, function (err, res) {
     if (err) throw err;
     numberInStock = res[0].stock_quantity;
     processOrder();
@@ -67,10 +69,8 @@ function processOrder() {
     connection.end();
   } else {
     numberInStock -= quantityOrdered;
-    console.log(itemID);
-    console.log(quantityOrdered);
-    console.log(numberInStock);
-    connection.query("UPDATE products SET stock_quantity =" + numberInStock + "WHERE item_id =" + itemID, function (err, res) {
+    const queryString = `UPDATE products SET stock_quantity=${numberInStock} WHERE item_id=${itemID}`;
+    connection.query(queryString, function (err, res) {
       if (err) throw err;
       connection.end();
     });
