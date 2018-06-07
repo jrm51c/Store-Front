@@ -40,6 +40,12 @@ function promptCustomer() {
       name: "itemID",
       message: "Enter the ID of the item you would like to purchase:"
     },
+    /*{
+      type: "list",
+      name: "ID",
+      message: "Enter the ID of the item you would like to purchase:",
+      choices: []
+    },*/
     {
       type: "input",
       name: "quantity",
@@ -68,14 +74,23 @@ function processOrder() {
     console.log("Sorry, but we are unable to process your order at this time due to insufficient inventory.");
     connection.end();
   } else {
+    console.log("Your order has been processed");
     numberInStock -= quantityOrdered;
     const queryString = `UPDATE products SET stock_quantity=${numberInStock} WHERE item_id=${itemID}`;
-    console.log(queryString);
     connection.query(queryString, function (err, res) {
       if (err) throw err;
       connection.end();
     });
   }
 };
+
+/*function selectAll() {
+	connection.query("select * from products", function(err, results) {
+		for (var i = 0; i < results.length; i++) {
+			console.log(results[i].item_id + " | " + results[i].product_name + " | " + results[i].department_name + " | " + results[i].price + " | " + results[i].stock_quantity);
+
+		}
+  });
+};*/
 
 displayProducts();

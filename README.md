@@ -2,6 +2,7 @@
 Amazon-like storefront that accepts orders from customers and depletes stock from the store's inventory.
 
 # Customer Role
+* type 'node bamazonCustomer.js' in a terminal window to run the customer application
 * Running the bamazonCustomer application will first display all the products contained in the products table
 * Customer will be prompted with 2 messages:
 * The first message asks customer to enter the ID of the product they would like to buy
@@ -11,6 +12,7 @@ Amazon-like storefront that accepts orders from customers and depletes stock fro
 * If enough inventory does not exist, customer is informed order can not be processed
 
 # Manager Role
+* type 'node bamazonManagerer.js' in a terminal window to run the manager application
 * Running the bamazonManager application will first prompt the manager to determine what they want to do
   * List a set of menu options:
     * View Products for Sale
